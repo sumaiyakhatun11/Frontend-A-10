@@ -19,7 +19,7 @@ const PopularGame = () => {
                 setGamesLoading(false);
             })
             .catch((err) => {
-                console.error("Failed to load game data", err);
+                // console.error("Failed to load game data", err);
                 setGamesLoading(false);
             });
     }, []);

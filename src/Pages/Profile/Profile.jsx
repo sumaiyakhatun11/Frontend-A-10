@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Provider/AuthProvider';
 
 const Profile = () => {
@@ -21,7 +21,9 @@ const Profile = () => {
             .then(() => setMessage("Profile updated successfully"))
             .catch(() => setMessage("Update failed"));
     };
-
+    useEffect(() => {
+        document.title = "Profile | Game Hub";
+    }, []);
     return (
         <div className="h-screen w-screen bg-gray-100 flex flex-col items-center">
             <div className="max-w-md mx-auto mt-10 p-6 bg-gray-400 text-white rounded-lg shadow-lg m-10">

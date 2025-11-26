@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
 
@@ -20,7 +20,7 @@ const LoginPage = () => {
                 // Signed in 
                 const user = userCredential.user;
 
-                console.log(user)
+                // console.log(user)
 
                 navigate('/');
             })
@@ -36,7 +36,7 @@ const LoginPage = () => {
     const handleContinueWithGoogle = () => {
         signInWithGoogle()
             .then(result => {
-                console.log(result)
+                // console.log(result)
 
                 navigate('/');
             })
@@ -50,13 +50,13 @@ const LoginPage = () => {
     const handleForgot = () => {
         navigate(`/forgotPassword/${email}`)
     }
-
+    useEffect(() => {
+        document.title = "Login | Game Portal";
+    }, []);
     return (
 
         <div className="hero bg-base-200 min-h-screen flex items-center justify-center">
-            <div>
-                {user ? user.email : "nope"}
-            </div>
+
 
             <div className="card bg-base-100 w-full max-w-sm shadow-2xl p-6">
                 <h1 className="font-semibold text-2xl text-center mb-4">
@@ -102,7 +102,19 @@ const LoginPage = () => {
                     </div>
 
                 </form>
-                <button onClick={handleContinueWithGoogle}>Continue with google</button>
+                <button
+                    type="button"
+                    onClick={handleContinueWithGoogle}
+                    className="w-full flex items-center justify-center gap-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition font-medium my-3"
+                >
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
+                        alt="Google"
+                        className="w-5 h-5"
+                    />
+                    Continue with Google
+                </button>
+
 
                 <p className="text-center mt-4">
                     Don't have an account?{" "}

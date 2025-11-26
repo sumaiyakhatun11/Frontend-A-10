@@ -24,7 +24,7 @@ const GameDetails = () => {
                 setGamesLoading(false);
             })
             .catch((err) => {
-                console.error("Failed to load game data", err);
+                // console.error("Failed to load game data", err);
                 setGamesLoading(false);
             });
     }, [user, loading, id, navigate]);

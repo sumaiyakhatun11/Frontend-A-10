@@ -6,7 +6,7 @@ import PopularGame from '../Components/PopularGame/PopularGame';
 
 const HomeLayouts = () => {
     return (
-        <div>
+        <div >
 
             <Navbar />
             <Outlet />

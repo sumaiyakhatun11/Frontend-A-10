@@ -1,23 +1,25 @@
-import React, { useContext, } from 'react';
+import React, { useContext, useEffect, } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
 
 
 const RegistrationPage = () => {
     const { setUser, createUser, signInWithGoogle } = useContext(AuthContext);
-
+    useEffect(() => {
+        document.title = "Registration | Game Hub";
+    }, []);
 
     const navigate = useNavigate();
     const handleRegister = (e) => {
         e.preventDefault();
-        console.log(e.target)
+        // console.log(e.target)
         const form = e.target;
         const name = form.name.value;
         const photo = form.photo.value;
         const password = form.password.value;
         const email = form.email.value;
 
-        console.log(name, photo, email, password)
+        // console.log(name, photo, email, password)
 
         const uppercase = /[A-Z]/;
         const lowercase = /[a-z]/;
@@ -55,7 +57,7 @@ const RegistrationPage = () => {
     const handleContinueWithGoogle = () => {
         signInWithGoogle()
             .then(result => {
-                console.log(result)
+                // console.log(result)
                 navigate('/');
             })
             .catch(error => {
