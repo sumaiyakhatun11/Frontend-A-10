@@ -12,6 +12,7 @@ import Profile from "../Pages/Profile/Profile";
 import PrivateRoutes from "./PrivateRoutes";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
+import AboutUs from "../Components/AboutUs/AboutUs";
 
 let router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ let router = createBrowserRouter([
             {
                 path: '/register',
                 element: <RegistrationPage></RegistrationPage>
+            },
+            {
+                path: '/aboutUs',
+                element: <AboutUs></AboutUs>
             },
             {
                 path: "/games/:id",
