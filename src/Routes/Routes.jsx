@@ -9,39 +9,42 @@ import Register from "../Pages/RegistrationPage/RegistrationPage";
 import RegistrationPage from "../Pages/RegistrationPage/RegistrationPage";
 import GameDetails from "../Pages/GameDetails/GameDetails";
 import Profile from "../Pages/Profile/Profile";
+import PrivateRoutes from "./PrivateRoutes";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
 let router = createBrowserRouter([
     {
         path: "/",
         Component: HomeLayouts,
-        errorElement: <h1>404</h1>,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
 
                 path: "/",
                 Component: Home
             },
+            {
+                path: '/login',
+                element: <LoginPage></LoginPage>
+            },
+            {
+                path: '/register',
+                element: <RegistrationPage></RegistrationPage>
+            },
+            {
+                path: "/games/:id",
+                element: <GameDetails />,
+            },
+            {
+                path: "/profile",
+                element: <PrivateRoutes><Profile></Profile></PrivateRoutes>,
+            },
 
 
         ]
 
     },
-    {
-        path: '/login',
-        element: <LoginPage></LoginPage>
-    },
-    {
-        path: '/register',
-        element: <RegistrationPage></RegistrationPage>
-    },
-    {
-        path: "/games/:id",
-        element: <GameDetails />,
-    },
-    {
-        path: "/profile",
-        element: <Profile></Profile>,
-    },
+
 ]);
 
 

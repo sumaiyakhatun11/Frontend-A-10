@@ -10,6 +10,7 @@ const HomeLayouts = () => {
 
             <Navbar />
             <Outlet />
+
         </div>
     );
 };

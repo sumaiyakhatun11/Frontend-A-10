@@ -18,6 +18,21 @@ const RegistrationPage = () => {
         const email = form.email.value;
 
         console.log(name, photo, email, password)
+
+        const uppercase = /[A-Z]/;
+        const lowercase = /[a-z]/;
+
+        if (password.length < 6) {
+            alert("Password Must Have 6 Character ")
+        }
+        if (!uppercase.test(password)) {
+            alert("Password Must Have an Uppercase letter")
+        }
+        if (!lowercase.test(password)) {
+            alert("Password Must Have an Lowercase letter")
+        }
+
+
         createUser(email, password)
             .then((userCredential) => {
 
@@ -25,6 +40,7 @@ const RegistrationPage = () => {
                 //console.log(user)
                 setUser(user)
                 navigate('/');
+                alert("Registration Successful")
 
             })
             .catch((error) => {
