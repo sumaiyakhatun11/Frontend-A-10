@@ -140,7 +140,18 @@ const RegistrationPage = () => {
 
                 </form>
 
-                <button onClick={handleContinueWithGoogle}>Sign up with google</button>
+                <button
+                    type="button"
+                    onClick={handleContinueWithGoogle}
+                    className="w-full flex items-center justify-center gap-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition font-medium my-3"
+                >
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
+                        alt="Google"
+                        className="w-5 h-5"
+                    />
+                    Continue with Google
+                </button>
 
                 <p className="text-center mt-4">
                     Already have an account?{" "}
