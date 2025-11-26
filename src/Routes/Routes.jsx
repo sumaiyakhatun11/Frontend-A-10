@@ -11,17 +11,18 @@ import GameDetails from "../Pages/GameDetails/GameDetails";
 import Profile from "../Pages/Profile/Profile";
 import PrivateRoutes from "./PrivateRoutes";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 
 let router = createBrowserRouter([
     {
         path: "/",
-        Component: HomeLayouts,
+        element: <HomeLayouts></HomeLayouts>,
         errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
 
                 path: "/",
-                Component: Home
+                element: <Home></Home>
             },
             {
                 path: '/login',
@@ -39,6 +40,11 @@ let router = createBrowserRouter([
                 path: "/profile",
                 element: <PrivateRoutes><Profile></Profile></PrivateRoutes>,
             },
+            {
+                path: "/forgotPassword/:email",
+                element: <ForgotPassword></ForgotPassword>,
+            },
+
 
 
         ]

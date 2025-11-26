@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
 
 const LoginPage = () => {
     const { user, login, signInWithGoogle } = useContext(AuthContext);
     const navigate = useNavigate()
+
+    const [email, setEmail] = useState('')
 
     const handleLogin = (e) => {
         e.preventDefault()
@@ -45,6 +47,10 @@ const LoginPage = () => {
 
     }
 
+    const handleForgot = () => {
+        navigate(`/forgotPassword/${email}`)
+    }
+
     return (
 
         <div className="hero bg-base-200 min-h-screen flex items-center justify-center">
@@ -68,6 +74,7 @@ const LoginPage = () => {
                             placeholder="Email"
                             className="input input-bordered"
                             name='email'
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
@@ -81,7 +88,7 @@ const LoginPage = () => {
                             className="input input-bordered"
                             name='password'
                         />
-                        <label className="label">
+                        <label className="label " onClick={handleForgot}>
                             <a className="label-text-alt link link-hover">
                                 Forgot password?
                             </a>
