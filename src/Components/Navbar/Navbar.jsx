@@ -23,16 +23,13 @@ const Navbar = () => {
             <div className="flex items-center gap-8 text-black-300 font-medium">
                 <Link to="/" className="hover:text-blue-400">Home</Link>
                 <Link to="/aboutUs" className="hover:text-blue-400">About Us</Link>
-                {user && (
-                    <Link to="/profile">
-                        <img
-                            src={user.photoURL || "https://i.ibb.co/4pDNDk1/avatar.jpg"}
-                            alt="Profile"
-                            className="w-10 h-10 rounded-full border-2 border-blue-400 hover:scale-105 transition"
-                        />
-                    </Link>
-                )}
-
+                <Link to={user ? "/profile" : "/login"}>
+                    <img
+                        src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.jpg"}
+                        alt="Profile"
+                        className="w-10 h-10 rounded-full border-2 border-blue-400 hover:scale-105 transition"
+                    />
+                </Link>
 
                 {user ? (
                     <button
