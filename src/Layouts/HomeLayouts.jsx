@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Components/Navbar/Navbar';
 import Banner from '../Components/Banner/Banner';
-import PopularGame from '../Components/PopularGame/PopularGame';
+import PopularGame from '../Components/Popular/Popular';
 
 const HomeLayouts = () => {
     return (

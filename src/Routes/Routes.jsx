@@ -13,6 +13,8 @@ import PrivateRoutes from "./PrivateRoutes";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import AboutUs from "../Components/AboutUs/AboutUs";
+import AddServices from "../Pages/AddServices/AddServices";
+import ViewDetails from "../Pages/ViewDetails/ViewDetails";
 
 let router = createBrowserRouter([
     {
@@ -42,12 +44,20 @@ let router = createBrowserRouter([
                 element: <GameDetails />,
             },
             {
+                path: "/viewDetails/:id",
+                element: <ViewDetails />,
+            },
+            {
                 path: "/profile",
                 element: <PrivateRoutes><Profile></Profile></PrivateRoutes>,
             },
             {
                 path: "/forgotPassword/:email",
                 element: <ForgotPassword></ForgotPassword>,
+            },
+            {
+                path: "/addServices",
+                element: <AddServices></AddServices>,
             },
 
 

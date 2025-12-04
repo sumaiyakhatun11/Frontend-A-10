@@ -46,6 +46,12 @@ const Navbar = () => {
                         Login
                     </Link>
                 )}
+                <Link
+                    to="/addServices"
+                    className="px-4 py-2"
+                >
+                    Add Services
+                </Link>
             </div>
 
         </nav>
