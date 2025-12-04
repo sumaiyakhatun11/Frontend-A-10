@@ -1,29 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../Provider/AuthProvider";
+import React, { use, useEffect, useState } from 'react';
+import { AuthContext } from '../../Provider/AuthProvider';
+import { Link } from 'react-router-dom';
 
-const Popular = () => {
-    const navigate = useNavigate();
-    const { user, loading } = useContext(AuthContext);
+const Services = () => {
 
     const [services, setServices] = useState([]);
     const [servicesLoading, setServicesLoading] = useState(true);
 
+    const { loading } = React.useContext(AuthContext);
+
+
 
     useEffect(() => {
-        fetch("http://localhost:3000/services")
-            .then((res) => res.json())
-            .then((data) => {
+        fetch('http://localhost:3000/services')
+            .then(res => res.json())
+            .then(data => {
                 setServices(data);
                 setServicesLoading(false);
             })
             .catch((err) => {
-                console.error("Failed to load services", err);
+                console.error('Failed to load services', err);
                 setServicesLoading(false);
             });
+
+
     }, []);
-
-
 
     if (loading || servicesLoading) {
         return <div className="text-white text-center mt-10">Loading...</div>;
@@ -77,4 +78,4 @@ const Popular = () => {
     );
 };
 
-export default Popular;
+export default Services;

@@ -28,6 +28,8 @@ const AddServices = () => {
         axios.post('http://localhost:3000/services', services)
             .then(res => {
                 console.log(res.data);
+                alert('Service added successfully');
+                form.reset();
             })
     }
 

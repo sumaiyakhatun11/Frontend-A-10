@@ -23,6 +23,21 @@ const Navbar = () => {
             <div className="flex items-center gap-8 text-black-300 font-medium">
                 <Link to="/" className="hover:text-blue-400">Home</Link>
                 <Link to="/aboutUs" className="hover:text-blue-400">About Us</Link>
+
+                <Link
+                    to="/addServices"
+                    className="px-4 py-2"
+                >
+                    Add Services
+                </Link>
+
+                <Link
+                    to="/services"
+                    className="px-4 py-2"
+                >
+                    Services
+                </Link>
+
                 <Link to={user ? "/profile" : "/login"}>
                     <img
                         src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.jpg"}
@@ -46,12 +61,6 @@ const Navbar = () => {
                         Login
                     </Link>
                 )}
-                <Link
-                    to="/addServices"
-                    className="px-4 py-2"
-                >
-                    Add Services
-                </Link>
             </div>
 
         </nav>

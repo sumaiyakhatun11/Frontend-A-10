@@ -15,6 +15,7 @@ import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import AboutUs from "../Components/AboutUs/AboutUs";
 import AddServices from "../Pages/AddServices/AddServices";
 import ViewDetails from "../Pages/ViewDetails/ViewDetails";
+import Services from "../Pages/Services/Services";
 
 let router = createBrowserRouter([
     {
@@ -45,7 +46,7 @@ let router = createBrowserRouter([
             },
             {
                 path: "/viewDetails/:id",
-                element: <ViewDetails />,
+                element: <PrivateRoutes><ViewDetails></ViewDetails></PrivateRoutes>,
             },
             {
                 path: "/profile",
@@ -58,6 +59,10 @@ let router = createBrowserRouter([
             {
                 path: "/addServices",
                 element: <AddServices></AddServices>,
+            },
+            {
+                path: "/services",
+                element: <Services></Services>,
             },
 
 
