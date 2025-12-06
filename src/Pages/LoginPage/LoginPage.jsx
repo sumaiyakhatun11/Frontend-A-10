@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
+import { showToast } from '../../Shared/toast';
 
 const LoginPage = () => {
     const { user, login, signInWithGoogle } = useContext(AuthContext);
@@ -28,7 +29,7 @@ const LoginPage = () => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
 
-                alert(errorCode, errorMessage)
+                showToast(`${errorCode} - ${errorMessage}`, 'error')
             });
 
     }
@@ -41,7 +42,7 @@ const LoginPage = () => {
                 navigate('/');
             })
             .catch(error => {
-                alert(error.code + " - " + error.message);
+                showToast(`${error.code} - ${error.message}`, 'error')
             });
 
 

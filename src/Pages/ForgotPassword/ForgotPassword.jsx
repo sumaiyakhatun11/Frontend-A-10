@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
 import { sendPasswordResetEmail } from 'firebase/auth';
+import { showToast } from '../../Shared/toast';
 
 const ForgotPassword = () => {
     const { email } = useParams()
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
         const email = form.email.value;
         sendPasswordResetEmail(auth, email)
             .then(() => {
-                alert('Password reset link has been sent')
+                showToast('Password reset link has been sent', 'success')
                 window.open('https://mail.google.com/mail/u/0/#inbox')
 
             })

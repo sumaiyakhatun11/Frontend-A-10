@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../../Provider/AuthProvider';
 import axios from 'axios';
+import { showToast } from '../../Shared/toast';
 
 const AddServices = () => {
 
@@ -28,7 +29,7 @@ const AddServices = () => {
         axios.post('http://localhost:3000/services', services)
             .then(res => {
                 console.log(res.data);
-                alert('Service added successfully');
+                showToast('Service added successfully', 'success');
                 form.reset();
             })
     }

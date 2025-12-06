@@ -12,10 +12,13 @@ import Profile from "../Pages/Profile/Profile";
 import PrivateRoutes from "./PrivateRoutes";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
-import AboutUs from "../Components/AboutUs/AboutUs";
+
 import AddServices from "../Pages/AddServices/AddServices";
 import ViewDetails from "../Pages/ViewDetails/ViewDetails";
 import Services from "../Pages/Services/Services";
+import MyServices from "../Pages/MyServices/MyServices";
+import UpdateServices from "../Pages/UpdateSercices/UpdateServices";
+import MyOrders from "../Pages/MyOrders/MyOrders";
 
 let router = createBrowserRouter([
     {
@@ -36,10 +39,7 @@ let router = createBrowserRouter([
                 path: '/register',
                 element: <RegistrationPage></RegistrationPage>
             },
-            {
-                path: '/aboutUs',
-                element: <AboutUs></AboutUs>
-            },
+
             {
                 path: "/games/:id",
                 element: <GameDetails />,
@@ -64,6 +64,19 @@ let router = createBrowserRouter([
                 path: "/services",
                 element: <Services></Services>,
             },
+            {
+                path: "/myServices",
+                element: <PrivateRoutes><MyServices></MyServices></PrivateRoutes>,
+            },
+            {
+                path: "/updateServices/:id",
+                element: <PrivateRoutes><UpdateServices></UpdateServices></PrivateRoutes>,
+            },
+            {
+                path: "/myOrders",
+                element: <PrivateRoutes><MyOrders></MyOrders></PrivateRoutes>,
+            },
+
 
 
 

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
+import { showToast } from '../../Shared/toast';
 
 
 const RegistrationPage = () => {
@@ -25,13 +26,16 @@ const RegistrationPage = () => {
         const lowercase = /[a-z]/;
 
         if (password.length < 6) {
-            alert("Password Must Have 6 Character ")
+            showToast('Password must have at least 6 characters', 'error')
+            return;
         }
         if (!uppercase.test(password)) {
-            alert("Password Must Have an Uppercase letter")
+            showToast('Password must contain an uppercase letter', 'error')
+            return;
         }
         if (!lowercase.test(password)) {
-            alert("Password Must Have an Lowercase letter")
+            showToast('Password must contain a lowercase letter', 'error')
+            return;
         }
 
 
@@ -42,14 +46,13 @@ const RegistrationPage = () => {
                 //console.log(user)
                 setUser(user)
                 navigate('/');
-                alert("Registration Successful")
+                showToast('Registration Successful', 'success')
 
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                // ..
-                alert(errorCode, errorMessage)
+                showToast(`${errorCode} - ${errorMessage}`, 'error')
             });
 
     }
@@ -61,7 +64,7 @@ const RegistrationPage = () => {
                 navigate('/');
             })
             .catch(error => {
-                alert(error.code + " - " + error.message);
+                showToast(`${error.code} - ${error.message}`, 'error')
             });
 
 
