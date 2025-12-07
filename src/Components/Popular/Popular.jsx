@@ -11,7 +11,7 @@ const Popular = () => {
 
 
     useEffect(() => {
-        fetch("http://localhost:3000/services?limit=6")
+        fetch("https://backend-a10.vercel.app/services?limit=6")
 
             .then((res) => res.json())
             .then((data) => {

@@ -14,7 +14,7 @@ const UpdateServices = () => {
 
     // 🔹 Load service by ID
     useEffect(() => {
-        fetch(`http://localhost:3000/services/${id}`)
+        fetch(`https://backend-a10.vercel.app/services/${id}`)
             .then(res => res.json())
             .then(data => setService(data));
     }, [id]);
@@ -37,7 +37,7 @@ const UpdateServices = () => {
             createdAt: service.createdAt
         };
 
-        axios.put(`http://localhost:3000/updateService/${id}`, updatedService).then(() => {
+        axios.put(`https://backend-a10.vercel.app/updateService/${id}`, updatedService).then(() => {
             showToast('Service updated successfully!', 'success');
             navigate('/myServices');
         });

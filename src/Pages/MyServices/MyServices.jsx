@@ -17,7 +17,7 @@ const MyServices = () => {
 
     useEffect(() => {
         if (user?.email) {
-            fetch(`http://localhost:3000/myServices/?email=${user.email}`)
+            fetch(`https://backend-a10.vercel.app/myServices/?email=${user.email}`)
                 .then(res => res.json())
                 .then(data => {
                     setMyService(data);
@@ -36,7 +36,7 @@ const MyServices = () => {
             confirmButtonText: 'Yes, delete it!',
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:3000/deleteService/${id}`).then(() => {
+                axios.delete(`https://backend-a10.vercel.app/deleteService/${id}`).then(() => {
                     setMyService(prev => prev.filter(service => service._id !== id));
                     showToast('Service deleted successfully!', 'success');
                 });

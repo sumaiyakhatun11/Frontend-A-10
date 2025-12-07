@@ -16,7 +16,7 @@ const MyOrders = () => {
     // ✅ Fetch orders
     useEffect(() => {
         axios
-            .get("http://localhost:3000/orders")
+            .get("https://backend-a10.vercel.app/orders")
             .then((res) => setOrders(res.data))
             .catch(() => {
                 Swal.fire({

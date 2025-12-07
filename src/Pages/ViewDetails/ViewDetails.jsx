@@ -19,7 +19,7 @@ const ViewDetails = () => {
             return;
         }
 
-        fetch(`http://localhost:3000/services/${id}`)
+        fetch(`https://backend-a10.vercel.app/services/${id}`)
             .then(res => res.json())
             .then(data => {
                 setService(data);
@@ -84,7 +84,7 @@ const ViewDetails = () => {
             date
         }
 
-        axios.post('http://localhost:3000/orders', order)
+        axios.post('https://backend-a10.vercel.app/orders', order)
             .then(res => {
                 console.log(res.data);
                 alert('Order placed successfully');
