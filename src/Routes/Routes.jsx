@@ -7,7 +7,7 @@ import Home from "../Pages/Home/Home";
 import LoginPage from "../Pages/LoginPage/LoginPage";
 import Register from "../Pages/RegistrationPage/RegistrationPage";
 import RegistrationPage from "../Pages/RegistrationPage/RegistrationPage";
-import GameDetails from "../Pages/GameDetails/GameDetails";
+
 import Profile from "../Pages/Profile/Profile";
 import PrivateRoutes from "./PrivateRoutes";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
@@ -19,6 +19,7 @@ import Services from "../Pages/Services/Services";
 import MyServices from "../Pages/MyServices/MyServices";
 import UpdateServices from "../Pages/UpdateSercices/UpdateServices";
 import MyOrders from "../Pages/MyOrders/MyOrders";
+import Terms from "../Components/Terms/Terms";
 
 let router = createBrowserRouter([
     {
@@ -40,10 +41,6 @@ let router = createBrowserRouter([
                 element: <RegistrationPage></RegistrationPage>
             },
 
-            {
-                path: "/games/:id",
-                element: <GameDetails />,
-            },
             {
                 path: "/viewDetails/:id",
                 element: <PrivateRoutes><ViewDetails></ViewDetails></PrivateRoutes>,
@@ -75,6 +72,10 @@ let router = createBrowserRouter([
             {
                 path: "/myOrders",
                 element: <PrivateRoutes><MyOrders></MyOrders></PrivateRoutes>,
+            },
+            {
+                path: "/terms",
+                element: <Terms></Terms>,
             },
 
 

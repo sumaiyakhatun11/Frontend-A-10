@@ -11,7 +11,10 @@ const MyServices = () => {
     const [myService, setMyService] = useState([]);
     const [serviceLoading, setServiceLoading] = useState(true);
 
-    // Fetch services for the logged-in user
+    useEffect(() => {
+        document.title = "My Services | PawMart";
+    }, []);
+
     useEffect(() => {
         if (user?.email) {
             fetch(`http://localhost:3000/myServices/?email=${user.email}`)
@@ -20,10 +23,7 @@ const MyServices = () => {
                     setMyService(data);
                     setServiceLoading(false);
                 })
-                .catch(err => {
-                    console.error("Service fetch failed ", err);
-                    setServiceLoading(false);
-                });
+                .catch(() => setServiceLoading(false));
         }
     }, [user?.email]);
 
@@ -33,92 +33,120 @@ const MyServices = () => {
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.delete(`http://localhost:3000/deleteService/${id}`).then(() => {
-                    const remaining = myService.filter(service => service._id !== id);
-                    setMyService(remaining);
+                    setMyService(prev => prev.filter(service => service._id !== id));
                     showToast('Service deleted successfully!', 'success');
-                }).catch(err => {
-                    console.error('Delete failed', err);
-                    showToast('Failed to delete service', 'error');
                 });
             }
         });
-    }
+    };
 
-    if (loading || serviceLoading) {
-        return <div className="text-center mt-10">Loading services...</div>;
-    }
+    if (loading || serviceLoading) return <p className="text-center mt-10">Loading services...</p>;
 
-    if (!myService || myService.length === 0) {
-        return <div className="text-center mt-10">You have no services yet.</div>;
-    }
+    if (!myService.length) return <p className="text-center mt-10">You have no services yet.</p>;
 
     return (
-        <div className="overflow-x-auto">
-            <table className="table">
-                {/* Head */}
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+        <div className="p-4">
 
-                {/* Body */}
-                <tbody>
-                    {myService.map(service => (
-                        <tr key={service._id}>
-                            <td>
-                                <div className="flex items-center gap-3">
-                                    <div className="avatar">
-                                        <div className="mask mask-squircle h-12 w-12">
-                                            <img
-                                                src={service.image}
-                                                alt={service.name}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="font-bold">{service.name}</div>
-                                        <div className="text-sm opacity-50">
-                                            {service.location}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                {service.category}
-                            </td>
-
-                            <td>
-                                {service.description}
-                            </td>
-
-                            <td className="flex gap-2">
-                                <Link to={`/updateServices/${service._id}`} className="btn btn-ghost btn-xs bg-green-400  hover:bg-green-200">
-                                    Edit
-                                </Link>
-
-                                <button onClick={() => { handleDetele(service._id) }} className="btn btn-ghost btn-xs bg-red-500 text-black hover:bg-red-300">
-                                    Delete
-                                </button>
-                            </td>
+            {/* ================= TABLE VIEW (DESKTOP) ================= */}
+            <div className="hidden md:block overflow-x-auto">
+                <table className="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {myService.map(service => (
+                            <tr key={service._id}>
+                                <td>
+                                    <div className="flex gap-3 items-center">
+                                        <img
+                                            src={service.image}
+                                            alt={service.name}
+                                            className="w-12 h-12 rounded-lg object-cover"
+                                        />
+                                        <div>
+                                            <p className="font-bold">{service.name}</p>
+                                            <p className="text-sm text-gray-500">{service.location}</p>
+                                        </div>
+                                    </div>
+                                </td>
 
-            </table>
+                                <td>{service.category}</td>
+                                <td className="max-w-xs truncate">{service.description}</td>
+
+                                <td className="flex gap-2">
+                                    <Link
+                                        to={`/updateServices/${service._id}`}
+                                        className="btn btn-xs bg-green-400 hover:bg-green-300"
+                                    >
+                                        Edit
+                                    </Link>
+
+                                    <button
+                                        onClick={() => handleDetele(service._id)}
+                                        className="btn btn-xs bg-red-500 text-black hover:bg-red-300"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* ================= CARD VIEW (MOBILE) ================= */}
+            <div className="space-y-4 md:hidden">
+                {myService.map(service => (
+                    <div key={service._id} className="bg-white shadow-md rounded-lg p-4">
+
+                        <div className="flex gap-4">
+                            <img
+                                src={service.image}
+                                alt={service.name}
+                                className="w-16 h-16 rounded-lg object-cover"
+                            />
+                            <div>
+                                <h3 className="font-bold">{service.name}</h3>
+                                <p className="text-sm text-gray-500">{service.location}</p>
+                                <p className="text-sm">Category: {service.category}</p>
+                            </div>
+                        </div>
+
+                        <p className="mt-2 text-gray-700 text-sm line-clamp-2">
+                            {service.description}
+                        </p>
+
+                        <div className="flex gap-3 mt-4">
+                            <Link
+                                to={`/updateServices/${service._id}`}
+                                className="btn btn-sm bg-green-400 hover:bg-green-300 "
+                            >
+                                Edit
+                            </Link>
+
+                            <button
+                                onClick={() => handleDetele(service._id)}
+                                className="btn btn-sm bg-red-500 text-black hover:bg-red-300 "
+                            >
+                                Delete
+                            </button>
+                        </div>
+
+                    </div>
+                ))}
+            </div>
+
         </div>
     );
-
 };
 
 export default MyServices;

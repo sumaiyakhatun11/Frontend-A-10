@@ -171,7 +171,7 @@ const ViewDetails = () => {
 
                 <motion.button className="text-black">
                     {/* You can open the modal using document.getElementById('ID').showModal() method */}
-                    <button className="btn" onClick={() => document.getElementById('my_modal_3').showModal()}>open modal</button>
+                    <button className="btn bg-[#773306] hover:bg-[#a34e03]" onClick={() => document.getElementById('my_modal_3').showModal()}>Adopt/Order Now</button>
                     <dialog id="my_modal_3" className="modal">
                         <div className="modal-box p-4">
                             <form method="dialog">
@@ -225,6 +225,7 @@ const ViewDetails = () => {
                                         className="input input-bordered w-full"
                                         placeholder="Quantity"
                                         min="1"
+                                        required
                                     />
                                 </div>
 
@@ -237,6 +238,7 @@ const ViewDetails = () => {
                                         defaultValue={`${service?.price}`}
                                         readOnly
                                         className="input input-bordered w-full"
+
                                     />
                                 </div>
 
@@ -248,6 +250,7 @@ const ViewDetails = () => {
                                         name="address"
                                         className="input input-bordered w-full"
                                         placeholder="Address"
+                                        required
                                     />
                                 </div>
 
@@ -259,6 +262,7 @@ const ViewDetails = () => {
                                         name="phone"
                                         className="input input-bordered w-full"
                                         placeholder="Phone"
+                                        required
                                     />
                                 </div>
 
@@ -274,8 +278,8 @@ const ViewDetails = () => {
                                 </div>
 
                                 {/* Submit Button */}
-                                <button type="submit" className="btn btn-primary w-full mt-3">
-                                    Place Order
+                                <button type="submit" className="btn btn-primary w-full mt-3 bg-[#6e2f04] hover:bg-[#9e4b02]">
+                                    Adopt/Order
                                 </button>
                             </form>
                         </div>

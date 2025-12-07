@@ -1,23 +1,24 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../Provider/AuthProvider";
-import { generateOrdersPDF } from "../../Shared/pdfGenerator";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { Tooltip } from "react-tooltip";
 
 const MyOrders = () => {
-    const { user } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(false);
 
-    // Load orders
+    // ✅ Dynamic title
+    useEffect(() => {
+        document.title = "My Orders | PawMart";
+    }, []);
+
+    // ✅ Fetch orders
     useEffect(() => {
         axios
             .get("http://localhost:3000/orders")
-            .then((res) => {
-                setOrders(res.data);
-            })
-            .catch((err) => {
-                console.error("Failed to load orders:", err);
+            .then((res) => setOrders(res.data))
+            .catch(() => {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -26,71 +27,89 @@ const MyOrders = () => {
             });
     }, []);
 
-    // Download PDF
-    const handleDownloadPDF = async () => {
-        if (!orders.length) {
-            return Swal.fire({
-                icon: "warning",
-                title: "No Orders",
-                text: "You have no orders to download",
-            });
-        }
+    // ✅ Download PDF
+    const downloadPDF = () => {
+        const doc = new jsPDF();
 
-        setLoading(true);
+        doc.setFontSize(18);
+        doc.text("My Orders Report", 14, 18);
 
-        try {
-            generateOrdersPDF(
-                orders,
-                user?.displayName || user?.email || "User"
-            );
+        const columns = ["Product", "Note", "Price", "Address", "Phone", "Date"];
 
-            Swal.fire({
-                icon: "success",
-                title: "PDF Downloaded",
-                text: "Your orders were saved successfully!",
-            });
-        } catch {
-            Swal.fire({
-                icon: "error",
-                title: "PDF Failed",
-                text: "Could not generate PDF. Check console for details.",
-            });
-        } finally {
-            setLoading(false);
-        }
+        const rows = orders.map((order) => [
+            order.productName,
+            order.note || "-",
+            `$${order.price}`,
+            order.address,
+            order.phone,
+            order.date ? new Date(order.date).toLocaleDateString() : "N/A",
+        ]);
+
+        autoTable(doc, {
+            head: [columns],
+            body: rows,
+            startY: 28,
+        });
+
+        doc.save("my_orders.pdf");
     };
 
     return (
-        <div className="m-8">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">My Orders</h2>
+        <div className="m-4 md:m-8">
 
+            {/* ================= HEADER ================= */}
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+                <h2 className="text-2xl font-bold text-center md:text-left">
+                    My Orders
+                </h2>
+
+                {/* ✅ PDF Button Tooltip */}
                 <button
-                    onClick={handleDownloadPDF}
-                    disabled={loading || orders.length === 0}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition"
+                    data-tooltip-id="pdfTip"
+                    data-tooltip-content="Download all your orders as a PDF report"
+                    onClick={downloadPDF}
+                    className="
+            px-4 py-2 rounded-lg font-semibold text-white
+            bg-gradient-to-r from-[#713600] via-[#8a4200] to-[#a64e00]
+            hover:from-[#5a2b00] hover:via-[#713600] hover:to-[#8a4200]
+            transition-all duration-300 shadow-md hover:shadow-lg active:scale-95
+            w-full md:w-auto
+          "
                 >
-                    {loading ? (
-                        <span className="flex gap-2 items-center">
-                            <span className="loading loading-spinner loading-sm" />
-                            Generating PDF...
-                        </span>
-                    ) : (
-                        "📥 Download PDF Report"
-                    )}
+                    🧾 Download PDF
                 </button>
+                <Tooltip id="pdfTip" />
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="table table-zebra table-sm">
+            {/* ================= DESKTOP TABLE VIEW ================= */}
+            <div className="hidden md:block overflow-x-auto">
+                <table className="table table-zebra table-sm w-full">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Product</th>
-                            <th>Note</th>
+
+                            {/* ✅ Header Tooltip */}
+                            <th
+                                data-tooltip-id="noteHeader"
+                                data-tooltip-content="Special notes or instructions for this order"
+                                className="cursor-help"
+                            >
+                                Note ℹ️
+                            </th>
+
                             <th>Price</th>
                             <th>Address</th>
-                            <th>Phone</th>
+
+                            {/* ✅ Header Tooltip */}
+                            <th
+                                data-tooltip-id="phoneHeader"
+                                data-tooltip-content="Customer contact phone number"
+                                className="cursor-help"
+                            >
+                                Phone ℹ️
+                            </th>
+
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -100,18 +119,48 @@ const MyOrders = () => {
                             orders.map((order, index) => (
                                 <tr key={order._id}>
                                     <th>{index + 1}</th>
+
                                     <td>{order.productName}</td>
-                                    <td>{order.note || "-"}</td>
+
+                                    {/* ✅ Note tooltip cell */}
+                                    <td
+                                        data-tooltip-id={`note-${order._id}`}
+                                        data-tooltip-content={order.note || "No note"}
+                                        className="truncate max-w-[160px] cursor-help"
+                                    >
+                                        {order.note || "-"}
+                                    </td>
+
                                     <td>${order.price}</td>
-                                    <td>{order.address}</td>
-                                    <td>{order.phone}</td>
+
+                                    {/* ✅ Address tooltip */}
+                                    <td
+                                        data-tooltip-id={`address-${order._id}`}
+                                        data-tooltip-content={order.address}
+                                        className="truncate max-w-[160px] cursor-help"
+                                    >
+                                        {order.address}
+                                    </td>
+
+                                    {/* ✅ Phone tooltip */}
+                                    <td
+                                        data-tooltip-id={`phone-${order._id}`}
+                                        data-tooltip-content={`Call: ${order.phone}`}
+                                        className="cursor-help"
+                                    >
+                                        {order.phone}
+                                    </td>
+
                                     <td>
                                         {order.date
-                                            ? new Date(
-                                                order.date
-                                            ).toLocaleDateString()
+                                            ? new Date(order.date).toLocaleDateString()
                                             : "N/A"}
                                     </td>
+
+                                    {/* Dynamic tooltips */}
+                                    <Tooltip id={`note-${order._id}`} />
+                                    <Tooltip id={`address-${order._id}`} />
+                                    <Tooltip id={`phone-${order._id}`} />
                                 </tr>
                             ))
                         ) : (
@@ -123,6 +172,76 @@ const MyOrders = () => {
                         )}
                     </tbody>
                 </table>
+
+                {/* Static header tooltips */}
+                <Tooltip id="noteHeader" />
+                <Tooltip id="phoneHeader" />
+            </div>
+
+            {/* ================= MOBILE CARD VIEW ================= */}
+            <div className="md:hidden space-y-4">
+                {orders.length > 0 ? (
+                    orders.map((order, index) => (
+                        <div
+                            key={order._id}
+                            className="bg-white p-4 rounded-xl shadow-md border"
+                        >
+                            <p className="font-bold mb-2">
+                                #{index + 1} — {order.productName}
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Note:</span>{" "}
+                                <span
+                                    data-tooltip-id={`mobile-note-${order._id}`}
+                                    data-tooltip-content={order.note || "No note"}
+                                    className="cursor-help"
+                                >
+                                    {order.note || "-"}
+                                </span>
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Price:</span> ${order.price}
+                            </p>
+
+                            <p
+                                data-tooltip-id={`mobile-address-${order._id}`}
+                                data-tooltip-content={order.address}
+                                className="cursor-help"
+                            >
+                                <span className="font-semibold">Address:</span> {order.address}
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Phone:</span>{" "}
+                                <span
+                                    data-tooltip-id={`mobile-phone-${order._id}`}
+                                    data-tooltip-content={`Call: ${order.phone}`}
+                                    className="cursor-help"
+                                >
+                                    {order.phone}
+                                </span>
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Date:</span>{" "}
+                                {order.date
+                                    ? new Date(order.date).toLocaleDateString()
+                                    : "N/A"}
+                            </p>
+
+                            {/* Mobile tooltips */}
+                            <Tooltip id={`mobile-note-${order._id}`} />
+                            <Tooltip id={`mobile-address-${order._id}`} />
+                            <Tooltip id={`mobile-phone-${order._id}`} />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-center mt-10 text-gray-500">
+                        No orders found
+                    </p>
+                )}
             </div>
         </div>
     );
