@@ -52,9 +52,7 @@ const Features = () => {
                     <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
                         Everything You Need
                     </h2>
-                    <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-                        PawMart provides the best platform for pet adoption and supplies with features designed for your convenience
-                    </p>
+                
                 </div>
 
                 {/* Features Grid */}

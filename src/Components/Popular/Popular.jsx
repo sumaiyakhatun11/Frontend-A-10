@@ -39,9 +39,7 @@ const Popular = () => {
         <h2 className="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
           Recent Listings
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-          Check out our newest furry friends looking for their forever homes
-        </p>
+        
       </motion.div>
 
       <div className="card-grid">

@@ -15,6 +15,7 @@ const Navbar = () => {
 
     const [isDark, setIsDark] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
 
     useEffect(() => {
         const storedTheme = localStorage.getItem('theme');
@@ -52,14 +53,6 @@ const Navbar = () => {
                     <>
                         <Link to="/dashboard/add-listing" className="hover:text-primary dark:hover:text-primary transition-colors">Add Listing</Link>
                         <Link to="/dashboard" className="hover:text-primary dark:hover:text-primary transition-colors">Dashboard</Link>
-                        <Link to="/dashboard/profile">
-                            <img
-                                src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.jpg"}
-                                referrerPolicy="no-referrer"
-                                alt="Profile"
-                                className="w-10 h-10 rounded-full border-2 border-primary hover:scale-105 transition"
-                            />
-                        </Link>
                     </>
                 )}
 
@@ -74,12 +67,63 @@ const Navbar = () => {
 
                 {/* Login/Logout Desktop */}
                 {user ? (
-                    <button
-                        onClick={handleLogout}
-                        className="btn-primary"
-                    >
-                        Logout
-                    </button>
+                    <div className="flex items-center gap-4">
+                        {/* Profile Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setProfileOpen(!profileOpen)}
+                                className="flex items-center gap-2 focus:outline-none"
+                                aria-label="Profile menu"
+                            >
+                                <img
+                                    src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.jpg"}
+                                    referrerPolicy="no-referrer"
+                                    alt="Profile"
+                                    className="w-10 h-10 rounded-full border-2 border-primary hover:scale-105 transition"
+                                />
+                                <svg className="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            {profileOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 py-2 z-50">
+                                    <Link
+                                        to="/dashboard/profile"
+                                        onClick={() => setProfileOpen(false)}
+                                        className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                                    >
+                                        View Profile
+                                    </Link>
+                                    <Link
+                                        to="/dashboard"
+                                        onClick={() => setProfileOpen(false)}
+                                        className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                    <div className="border-t border-neutral-200 dark:border-neutral-700 my-1"></div>
+                                    <button
+                                        onClick={() => {
+                                            setProfileOpen(false);
+                                            handleLogout();
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Logout Button */}
+                        <button
+                            onClick={handleLogout}
+                            className="btn-primary"
+                        >
+                            Logout
+                        </button>
+                    </div>
                 ) : (
                     <Link
                         to="/login"

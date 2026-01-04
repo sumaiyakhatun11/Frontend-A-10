@@ -103,7 +103,7 @@ const DashboardLayout = () => {
 
                     <button
                         onClick={handleLogout}
-                        className="bg-primary text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-700 transition-all duration-300"
+                        className="btn-primary"
                     >
                         Logout
                     </button>

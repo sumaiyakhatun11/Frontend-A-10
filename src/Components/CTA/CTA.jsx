@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const CTA = () => {
     return (
-        <section className="section-padding bg-gradient-to-r from-secondary to-blue-600 text-white relative overflow-hidden">
+        <section className="section-padding bg-gradient-to-r from-[#af6723] via-[#af6760] to-[#af6723] text-white relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-10 left-10 text-9xl">🐾</div>
