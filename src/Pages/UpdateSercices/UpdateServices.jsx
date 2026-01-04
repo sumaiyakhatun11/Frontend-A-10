@@ -39,14 +39,15 @@ const UpdateServices = () => {
 
         axios.put(`https://backend-a10.vercel.app/updateService/${id}`, updatedService).then(() => {
             showToast('Service updated successfully!', 'success');
-            navigate('/myServices');
+            navigate('/dashboard/my-listings');
         });
     };
 
     if (!service) return <div className="text-center mt-10">Loading...</div>;
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10 ">
+        <div className="container-custom section-padding">
+        <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-neutral-800 shadow-md rounded-lg">
 
             <h2 className="text-2xl font-bold mb-6 text-center">
                 Update Service
@@ -125,18 +126,19 @@ const UpdateServices = () => {
                     type="email"
                     value={user?.email || ''}
                     readOnly
-                    className="input input-bordered w-full bg-gray-100"
+                    className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                 />
 
                 {/* Submit */}
                 <button
                     type="submit"
-                    className="bg-[#5b2501] text-white px-6 py-2 rounded hover:bg-[#7a3a01] transition"
+                    className="btn-primary px-8"
                 >
                     Update Service
                 </button>
 
             </form>
+        </div>
         </div>
     );
 };

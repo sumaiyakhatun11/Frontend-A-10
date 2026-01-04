@@ -39,12 +39,13 @@ const AddServices = () => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg m-10 text-black">
+        <div className="container-custom section-padding">
+        <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-neutral-800 shadow-md rounded-lg text-neutral-900 dark:text-white">
             <h2 className="text-2xl font-bold mb-6 text-center">
                 Add Product / Pet
             </h2>
 
-            <form className="space-y-4 bg-white text-black" onSubmit={handleSubmit}>
+            <form className="space-y-4 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white" onSubmit={handleSubmit}>
 
                 {/* Name */}
                 <div>
@@ -156,7 +157,7 @@ const AddServices = () => {
                         type="email"
                         value={user?.email || ''}
                         readOnly
-                        className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
+                        className="w-full border border-neutral-300 dark:border-neutral-600 rounded px-3 py-2 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white cursor-not-allowed"
                     />
                 </div>
 
@@ -164,13 +165,14 @@ const AddServices = () => {
                 <div className="text-center mt-4">
                     <button
                         type="submit"
-                        className="bg-[#5b2501] text-white px-6 py-2 rounded hover:bg-[#7a3a01] transition"
+                        className="btn-primary px-8"
                     >
                         Submit
                     </button>
                 </div>
 
             </form>
+        </div>
         </div>
     );
 };

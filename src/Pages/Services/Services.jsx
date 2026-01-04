@@ -1,29 +1,32 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../Provider/AuthProvider';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Services = () => {
-
     useEffect(() => {
-        document.title = "Services | PawMart";
+        document.title = "Explore Pets | PawMart";
     }, []);
 
     const { loading } = useContext(AuthContext);
-
     const [services, setServices] = useState([]);
     const [servicesLoading, setServicesLoading] = useState(true);
     const [category, setCategory] = useState("All");
     const [search, setSearch] = useState("");
     const [filteredServices, setFilteredServices] = useState([]);
+    const [sortBy, setSortBy] = useState("default");
+    const [priceRange, setPriceRange] = useState("all");
+    
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     const location = useLocation();
     const navigate = useNavigate();
 
-
     const queryParams = new URLSearchParams(location.search);
     const categoryFromUrl = queryParams.get('category');
     const searchFromUrl = queryParams.get('search');
-
 
     useEffect(() => {
         fetch('https://backend-a10.vercel.app/services')
@@ -34,7 +37,6 @@ const Services = () => {
 
                 let results = data;
 
-                // Category filter from URL
                 if (categoryFromUrl) {
                     setCategory(categoryFromUrl);
                     results = results.filter(service =>
@@ -42,7 +44,6 @@ const Services = () => {
                     );
                 }
 
-                // Search filter from URL
                 if (searchFromUrl) {
                     setSearch(searchFromUrl);
                     results = results.filter(service =>
@@ -56,16 +57,9 @@ const Services = () => {
                 console.error('Failed to load services', err);
                 setServicesLoading(false);
             });
-
     }, [categoryFromUrl, searchFromUrl]);
 
-    if (loading || servicesLoading) {
-        return <div className="text-center mt-10">Loading...</div>;
-    }
-
-
-    const applyFilter = (selectedCategory, searchText) => {
-
+    const applyFilter = (selectedCategory, searchText, selectedSortBy, selectedPriceRange) => {
         let results = [...services];
 
         // Category filter
@@ -78,111 +72,323 @@ const Services = () => {
         // Search filter
         if (searchText) {
             results = results.filter(service =>
-                service.name.toLowerCase().includes(searchText.toLowerCase())
+                service.name.toLowerCase().includes(searchText.toLowerCase()) ||
+                service.location?.toLowerCase().includes(searchText.toLowerCase())
             );
         }
 
+        // Price range filter
+        if (selectedPriceRange !== "all") {
+            const ranges = {
+                "0-50": [0, 50],
+                "50-200": [50, 200],
+                "200-500": [200, 500],
+                "500+": [500, Infinity]
+            };
+            const [min, max] = ranges[selectedPriceRange];
+            results = results.filter(service => 
+                service.price >= min && service.price <= max
+            );
+        }
+
+        // Sorting
+        if (selectedSortBy === "price-low") {
+            results.sort((a, b) => a.price - b.price);
+        } else if (selectedSortBy === "price-high") {
+            results.sort((a, b) => b.price - a.price);
+        } else if (selectedSortBy === "name-az") {
+            results.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
         setFilteredServices(results);
+        setCurrentPage(1); // Reset to first page when filters change
 
-        // Update URL dynamically
+        // Update URL
         let params = [];
-
         if (selectedCategory !== "All") params.push(`category=${selectedCategory}`);
         if (searchText) params.push(`search=${encodeURIComponent(searchText)}`);
-
         navigate(`/services${params.length ? `?${params.join("&")}` : ""}`);
     };
 
     const handleCategorySelection = (e) => {
         const selected = e.target.value;
         setCategory(selected);
-        applyFilter(selected, search);
+        applyFilter(selected, search, sortBy, priceRange);
     };
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
-        applyFilter(category, value);
+        applyFilter(category, value, sortBy, priceRange);
     };
 
+    const handleSortChange = (e) => {
+        const selected = e.target.value;
+        setSortBy(selected);
+        applyFilter(category, search, selected, priceRange);
+    };
+
+    const handlePriceRangeChange = (e) => {
+        const selected = e.target.value;
+        setPriceRange(selected);
+        applyFilter(category, search, sortBy, selected);
+    };
+
+    // Pagination logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredServices.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Skeleton loader
+    const SkeletonCard = () => (
+        <div className="card-standard">
+            <div className="skeleton h-48 w-full mb-4"></div>
+            <div className="skeleton h-6 w-3/4 mb-2"></div>
+            <div className="skeleton h-4 w-1/2 mb-2"></div>
+            <div className="skeleton h-4 w-2/3 mb-4"></div>
+            <div className="skeleton h-10 w-full"></div>
+        </div>
+    );
+
+    if (loading || servicesLoading) {
+        return (
+            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+                <div className="container-custom py-8">
+                    <div className="skeleton h-12 w-64 mb-8"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="p-6">
-
-            {/* FILTER BAR */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-center">
-
-                {/* SEARCH */}
-                <input
-                    type="text"
-                    placeholder="Search by name..."
-                    value={search}
-                    onChange={handleSearch}
-                    className="input input-bordered w-full md:w-[300px] border-2 border-[#713600]"
-                />
-
-                {/* CATEGORY */}
-                <select
-                    className="select select-info border-[#713600] border-2 w-full md:w-[200px]"
-                    onChange={handleCategorySelection}
-                    value={category}
-                >
-                    <option value="All">All</option>
-                    <option value="Pets">Pets</option>
-                    <option value="Food">Food</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Care Products">Care Products</option>
-                </select>
-
-            </div>
-
-
-            {/* GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 m-8">
-                {filteredServices.length === 0 && (
-                    <p className="text-center col-span-full text-gray-500">
-                        No services found.
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+            <div className="container-custom py-8">
+                {/* Page Header */}
+                <div className="mb-8">
+                    <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
+                        Explore Pets & Supplies
+                    </h1>
+                    <p className="text-lg text-neutral-600 dark:text-neutral-400">
+                        Find your perfect companion or essential pet supplies
                     </p>
-                )}
+                </div>
 
-                {filteredServices.map((item) => (
-                    <div
-                        key={item._id}
-                        className="cursor-pointer rounded-lg shadow-2xl p-7 bg-white hover:scale-105 transition"
-                    >
-                        <img
-                            src={item.image}
-                            alt={item.name}
-                            className="h-40 w-full object-cover rounded-md"
-                        />
+                {/* Filter Bar */}
+                <div className="card-standard mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Search */}
+                        <div className="lg:col-span-2">
+                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                🔍 Search
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Search by name or location..."
+                                value={search}
+                                onChange={handleSearch}
+                                className="input-standard"
+                            />
+                        </div>
 
-                        <h3 className="mt-2 text-lg font-bold">{item.name}</h3>
-
-                        <p className="text-sm text-gray-600">
-                            Category: {item.category}
-                        </p>
-
-                        <p className="text-sm text-gray-600">
-                            Location: {item.location}
-                        </p>
-
-                        <p className="text-md font-semibold text-green-600">
-                            Price: ${item.price}
-                        </p>
-
-                        <Link to={`/viewDetails/${item._id}`}>
-                            <button
-                                className="mt-2 w-full px-4 py-2 rounded-lg font-semibold text-white
-                                bg-gradient-to-r from-[#713600] via-[#8a4200] to-[#a64e00]
-                                hover:from-[#5a2b00] hover:via-[#713600] hover:to-[#8a4200]
-                                transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+                        {/* Category Filter */}
+                        <div>
+                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                📁 Category
+                            </label>
+                            <select
+                                className="input-standard"
+                                onChange={handleCategorySelection}
+                                value={category}
                             >
-                                See Details
-                            </button>
-                        </Link>
+                                <option value="All">All Categories</option>
+                                <option value="Pets">Pets</option>
+                                <option value="Food">Food</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="Care Products">Care Products</option>
+                            </select>
+                        </div>
 
+                        {/* Price Range Filter */}
+                        <div>
+                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                💰 Price Range
+                            </label>
+                            <select
+                                className="input-standard"
+                                onChange={handlePriceRangeChange}
+                                value={priceRange}
+                            >
+                                <option value="all">All Prices</option>
+                                <option value="0-50">0 - 50 tk</option>
+                                <option value="50-200">50 - 200 tk</option>
+                                <option value="200-500">200 - 500 tk</option>
+                                <option value="500+">500+ tk</option>
+                            </select>
+                        </div>
+
+                        {/* Sort */}
+                        <div className="lg:col-span-4">
+                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                🔄 Sort By
+                            </label>
+                            <select
+                                className="input-standard"
+                                onChange={handleSortChange}
+                                value={sortBy}
+                            >
+                                <option value="default">Default</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="name-az">Name: A-Z</option>
+                            </select>
+                        </div>
                     </div>
-                ))}
+
+                    {/* Results Count */}
+                    <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredServices.length)} of {filteredServices.length} results
+                        </p>
+                    </div>
+                </div>
+
+                {/* Results Grid */}
+                {currentItems.length === 0 ? (
+                    <div className="text-center py-16">
+                        <div className="text-6xl mb-4">🔍</div>
+                        <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                            No Results Found
+                        </h3>
+                        <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+                            Try adjusting your filters or search terms
+                        </p>
+                        <button
+                            onClick={() => {
+                                setCategory("All");
+                                setSearch("");
+                                setSortBy("default");
+                                setPriceRange("all");
+                                setFilteredServices(services);
+                            }}
+                            className="btn-primary"
+                        >
+                            Clear All Filters
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="card-grid">
+                            {currentItems.map((item, index) => (
+                                <motion.div
+                                    key={item._id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    className="card-standard group"
+                                >
+                                    {/* Image */}
+                                    <div className="relative overflow-hidden rounded-lg mb-4 h-48">
+                                        <img
+                                            src={item.image}
+                                            alt={item.name}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                        <div className="absolute top-2 right-2 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                            {item.price} tk
+                                        </div>
+                                    </div>
+
+                                    {/* Content */}
+                                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 line-clamp-1">
+                                        {item.name}
+                                    </h3>
+
+                                    <div className="space-y-2 mb-4">
+                                        <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                            </svg>
+                                            {item.category}
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            {item.location || 'Not specified'}
+                                        </div>
+                                    </div>
+
+                                    {/* Button */}
+                                    <Link to={`/viewDetails/${item._id}`} className="block">
+                                        <button className="btn-primary w-full">
+                                            View Details
+                                        </button>
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-2 mt-12">
+                                <button
+                                    onClick={() => paginate(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="px-4 py-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+                                >
+                                    Previous
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    // Show first, last, current, and 2 pages around current
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => paginate(pageNumber)}
+                                                className={`px-4 py-2 rounded-lg border transition-colors ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-primary text-white border-primary'
+                                                        : 'bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    } else if (
+                                        pageNumber === currentPage - 2 ||
+                                        pageNumber === currentPage + 2
+                                    ) {
+                                        return <span key={pageNumber}>...</span>;
+                                    }
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => paginate(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="px-4 py-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

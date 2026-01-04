@@ -49,7 +49,7 @@ const MyServices = () => {
     if (!myService.length) return <p className="text-center mt-10">You have no services yet.</p>;
 
     return (
-        <div className="p-4">
+        <div className="container-custom section-padding">
 
             {/* ================= TABLE VIEW (DESKTOP) ================= */}
             <div className="hidden md:block overflow-x-auto">
@@ -74,7 +74,7 @@ const MyServices = () => {
                                         />
                                         <div>
                                             <p className="font-bold">{service.name}</p>
-                                            <p className="text-sm text-gray-500">{service.location}</p>
+                                            <p className="text-sm text-neutral-600 dark:text-neutral-400">{service.location}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -84,15 +84,15 @@ const MyServices = () => {
 
                                 <td className="flex gap-2">
                                     <Link
-                                        to={`/updateServices/${service._id}`}
-                                        className="btn btn-xs bg-green-400 hover:bg-green-300"
+                                        to={`/dashboard/update-listing/${service._id}`}
+                                        className="btn-success btn-xs"
                                     >
                                         Edit
                                     </Link>
 
                                     <button
                                         onClick={() => handleDetele(service._id)}
-                                        className="btn btn-xs bg-red-500 text-black hover:bg-red-300"
+                                        className="btn-danger btn-xs"
                                     >
                                         Delete
                                     </button>
@@ -116,26 +116,26 @@ const MyServices = () => {
                             />
                             <div>
                                 <h3 className="font-bold">{service.name}</h3>
-                                <p className="text-sm text-gray-500">{service.location}</p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-400">{service.location}</p>
                                 <p className="text-sm">Category: {service.category}</p>
                             </div>
                         </div>
 
-                        <p className="mt-2 text-gray-700 text-sm line-clamp-2">
+                        <p className="mt-2 text-neutral-700 dark:text-neutral-300 text-sm line-clamp-2">
                             {service.description}
                         </p>
 
                         <div className="flex gap-3 mt-4">
                             <Link
-                                to={`/updateServices/${service._id}`}
-                                className="btn btn-sm bg-green-400 hover:bg-green-300 "
+                                to={`/dashboard/update-listing/${service._id}`}
+                                className="btn-success btn-sm"
                             >
                                 Edit
                             </Link>
 
                             <button
                                 onClick={() => handleDetele(service._id)}
-                                className="btn btn-sm bg-red-500 text-black hover:bg-red-300 "
+                                className="btn-danger btn-sm"
                             >
                                 Delete
                             </button>

@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Implementation files
+**/button-style*
+**/grid*
+implementation.md
+IMPLEMENTATION.md

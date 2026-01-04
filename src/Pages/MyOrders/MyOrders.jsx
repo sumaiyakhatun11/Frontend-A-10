@@ -1,31 +1,45 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Tooltip } from "react-tooltip";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 const MyOrders = () => {
+    const { user } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // ✅ Dynamic title
     useEffect(() => {
         document.title = "My Orders | PawMart";
     }, []);
 
-    // ✅ Fetch orders
+    // ✅ Fetch orders filtered by user email
     useEffect(() => {
+        if (!user?.email) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
         axios
-            .get("https://backend-a10.vercel.app/orders")
-            .then((res) => setOrders(res.data))
-            .catch(() => {
+            .get(`https://backend-a10.vercel.app/orders?email=${user.email}`)
+            .then((res) => {
+                setOrders(res.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error loading orders:", error);
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Unable to load orders",
+                    text: "Unable to load orders. Please try again.",
                 });
+                setLoading(false);
             });
-    }, []);
+    }, [user?.email]);
 
     // ✅ Download PDF
     const downloadPDF = () => {
@@ -55,15 +69,23 @@ const MyOrders = () => {
     };
 
     return (
-        <div className="m-4 md:m-8">
+        <div className="container-custom section-padding">
 
+            {/* Loading State */}
+            {loading ? (
+                <div className="text-center py-10">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    <p className="mt-4 text-neutral-600 dark:text-neutral-400">Loading your orders...</p>
+                </div>
+            ) : (
+                <>
             {/* ================= HEADER ================= */}
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
-                <h2 className="text-2xl font-bold text-center md:text-left">
-                    My Orders
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">\n                <h2 className="text-2xl font-bold text-center md:text-left text-neutral-900 dark:text-white">
+                    My Orders {orders.length > 0 && <span className="text-primary">({orders.length})</span>}
                 </h2>
 
                 {/* ✅ PDF Button Tooltip */}
+                {orders.length > 0 && (
                 <button
                     data-tooltip-id="pdfTip"
                     data-tooltip-content="Download all your orders as a PDF report"
@@ -78,6 +100,7 @@ const MyOrders = () => {
                 >
                     🧾 Download PDF
                 </button>
+                )}
                 <Tooltip id="pdfTip" />
             </div>
 
@@ -166,7 +189,15 @@ const MyOrders = () => {
                         ) : (
                             <tr>
                                 <td colSpan="7" className="text-center py-6">
-                                    No orders found
+                                    <div className="flex flex-col items-center gap-4">
+                                        <svg className="w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                        </svg>
+                                        <div>
+                                            <p className="text-neutral-600 dark:text-neutral-400 mb-2">No orders found</p>
+                                            <p className="text-sm text-neutral-500 dark:text-neutral-500">Start shopping to see your orders here!</p>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         )}
@@ -238,11 +269,17 @@ const MyOrders = () => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-center mt-10 text-gray-500">
-                        No orders found
-                    </p>
+                    <div className="text-center mt-10 p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-md">
+                        <svg className="w-16 h-16 text-neutral-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                        <p className="text-neutral-600 dark:text-neutral-400 mb-2">No orders found</p>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-500">Start shopping to see your orders here!</p>
+                    </div>
                 )}
             </div>
+            </>
+            )}
         </div>
     );
 };

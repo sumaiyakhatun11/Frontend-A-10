@@ -25,8 +25,9 @@ const Profile = () => {
         document.title = "Profile | Game Hub";
     }, []);
     return (
-        <div className="h-screen w-screen bg-gray-100 flex flex-col items-center">
-            <div className="max-w-md mx-auto mt-10 p-6 bg-gray-400 text-white rounded-lg shadow-lg m-10">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col items-center">
+            <div className="container-custom section-padding w-full flex justify-center">
+            <div className="max-w-md w-full p-6 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold mb-4">User Profile</h2>
 
                 {user?.photoURL && (
@@ -41,7 +42,7 @@ const Profile = () => {
                 <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
                 <button
                     onClick={handleUpdate}
-                    className="bg-gray-800 p-4 rounded-2xl text-xl text-white  hover:bg-gray-300"
+                    className="btn-primary w-full"
                 >
                     Update Your Profile
                 </button>
@@ -53,7 +54,7 @@ const Profile = () => {
 
                 <form
                     onSubmit={handleSubmit}
-                    className="mt-6 bg-gray-400 p-6 rounded-lg shadow-md w-80 text-white"
+                    className="mt-6 bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-md w-80 text-neutral-900 dark:text-white"
                 >
                     <input
                         type="text"
@@ -75,7 +76,7 @@ const Profile = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-gray-800 rounded-2xl text-white p-2 rounded hover:bg-gray-300"
+                        className="btn-primary w-full"
                     >
                         Save Changes
                     </button>
@@ -83,6 +84,8 @@ const Profile = () => {
                     {message && <p className="mt-3 text-center">{message}</p>}
                 </form>
             )}
+            </div>
+            
         </div>
     );
 };

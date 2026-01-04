@@ -94,8 +94,9 @@ const ViewDetails = () => {
     }
 
     return (
+        <div className="container-custom section-padding">
         <motion.div
-            className="max-w-4xl mx-auto px-6 py-10 text-white"
+            className="max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -128,7 +129,7 @@ const ViewDetails = () => {
 
             {/*Info Card */}
             <motion.div
-                className="bg-gray-900 p-5 rounded-lg mb-6"
+                className="bg-neutral-100 dark:bg-neutral-800 p-5 rounded-lg mb-6 transition-colors"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
             >
@@ -149,8 +150,8 @@ const ViewDetails = () => {
                     <span className="font-semibold">Contact:</span> {service.email}
                 </p>
 
-                <p className="text-gray-300">
-                    <span className="font-semibold text-white">Description:</span>{" "}
+                <p className="text-neutral-700 dark:text-neutral-300">
+                    <span className="font-semibold text-neutral-900 dark:text-white">Description:</span>{" "}
                     {service.description}
                 </p>
 
@@ -162,67 +163,67 @@ const ViewDetails = () => {
 
                 <motion.button
                     onClick={() => navigate("/services")}
-                    className="px-6 py-3 bg-gray-700 hover:bg-gray-600 transition rounded-lg"
+                    className="px-6 py-3 bg-neutral-600 dark:bg-neutral-700 hover:bg-neutral-500 dark:hover:bg-neutral-600 text-white transition rounded-lg"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
                     Back to Services
                 </motion.button>
 
-                <motion.button className="text-black">
+                <motion.button>
                     {/* You can open the modal using document.getElementById('ID').showModal() method */}
-                    <button className="btn bg-[#773306] hover:bg-[#a34e03]" onClick={() => document.getElementById('my_modal_3').showModal()}>Adopt/Order Now</button>
+                    <button className="btn-primary" onClick={() => document.getElementById('my_modal_3').showModal()}>Adopt/Order Now</button>
                     <dialog id="my_modal_3" className="modal">
-                        <div className="modal-box p-4">
+                        <div className="modal-box p-4 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white">
                             <form method="dialog">
-                                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                <button className="absolute right-2 top-2 w-8 h-8 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center justify-center transition-colors text-neutral-900 dark:text-white">✕</button>
                             </form>
-                            <form onSubmit={handleSubmit} className="space-y-4 text-black">
+                            <form onSubmit={handleSubmit} className="space-y-4">
                                 <p className="text-lg font-semibold mb-2">Order Details</p>
 
                                 {/* Product Name */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Product Name</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Product Name</label>
                                     <input
                                         type="text"
                                         name="productName"
                                         defaultValue={service?.name}
                                         readOnly
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                     />
                                 </div>
 
                                 {/* Buyer Name */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Buyer Name</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Buyer Name</label>
                                     <input
                                         type="text"
                                         name="buyerName"
                                         defaultValue={user?.displayName}
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Your name"
                                     />
                                 </div>
 
                                 {/* Buyer Email */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Buyer Email</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Buyer Email</label>
                                     <input
                                         type="email"
                                         name="buyerEmail"
                                         defaultValue={user?.email}
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Email"
                                     />
                                 </div>
 
                                 {/* Quantity */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Quantity</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Quantity</label>
                                     <input
                                         type="number"
                                         name="quantity"
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Quantity"
                                         min="1"
                                         required
@@ -231,24 +232,24 @@ const ViewDetails = () => {
 
                                 {/* Price */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Price</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Price</label>
                                     <input
                                         type="text"
                                         name="price"
                                         defaultValue={`${service?.price}`}
                                         readOnly
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
 
                                     />
                                 </div>
 
                                 {/* Address */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Address</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Address</label>
                                     <input
                                         type="text"
                                         name="address"
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Address"
                                         required
                                     />
@@ -256,11 +257,11 @@ const ViewDetails = () => {
 
                                 {/* Phone */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Phone</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Phone</label>
                                     <input
                                         type="tel"
                                         name="phone"
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Phone"
                                         required
                                     />
@@ -268,17 +269,17 @@ const ViewDetails = () => {
 
                                 {/* Additional Note */}
                                 <div className="flex flex-col items-start">
-                                    <label className="text-sm mb-1">Additional Note</label>
+                                    <label className="text-sm mb-1 text-neutral-900 dark:text-white">Additional Note</label>
                                     <textarea
                                         name="note"
                                         rows="2"
-                                        className="textarea textarea-bordered w-full"
+                                        className="textarea textarea-bordered w-full bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-600"
                                         placeholder="Additional Note"
                                     ></textarea>
                                 </div>
 
                                 {/* Submit Button */}
-                                <button type="submit" className="btn btn-primary w-full mt-3 bg-[#6e2f04] hover:bg-[#9e4b02]">
+                                <button type="submit" className="btn-primary w-full mt-3">
                                     Adopt/Order
                                 </button>
                             </form>
@@ -292,7 +293,7 @@ const ViewDetails = () => {
 
 
         </motion.div>
-
+        </div>
     );
 };
 
