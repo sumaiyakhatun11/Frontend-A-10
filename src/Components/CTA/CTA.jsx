@@ -4,14 +4,8 @@ import { motion } from 'framer-motion';
 
 const CTA = () => {
     return (
-        <section className="section-padding bg-gradient-to-r from-[#af6723] via-[#af6760] to-[#af6723] text-white relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 text-9xl">🐾</div>
-                <div className="absolute bottom-10 right-10 text-9xl">❤️</div>
-                <div className="absolute top-1/2 left-1/4 text-7xl">🐕</div>
-                <div className="absolute top-1/3 right-1/4 text-7xl">🐱</div>
-            </div>
+        <section className="section-padding bg-gradient-to-r from-[#af6723] via-[#af6760] to-[#af6723] text-white relative overflow-hidden p-6">
+            
 
             <div className="container-custom relative z-10">
                 <div className="max-w-4xl mx-auto text-center">
@@ -32,7 +26,7 @@ const CTA = () => {
                                 to="/services"
                                 className="px-8 py-4 bg-white text-secondary rounded-lg font-bold text-lg hover:bg-neutral-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2"
                             >
-                                🔍 Browse Pets
+                                Browse Pets
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                 </svg>
@@ -41,7 +35,7 @@ const CTA = () => {
                                 to="/addServices"
                                 className="px-8 py-4 bg-primary text-white rounded-lg font-bold text-lg hover:bg-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2"
                             >
-                                ➕ List Your Pet
+                                List Your Pet
                             </Link>
                         </div>
 

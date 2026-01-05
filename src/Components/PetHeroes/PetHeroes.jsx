@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const heroes = [
     {
@@ -27,7 +27,37 @@ const heroes = [
     },
 ];
 
+
+
 const PetHeroes = () => {
+    const [isDark, setIsDark] = useState(() => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) return savedTheme === 'dark';
+        return document.documentElement.getAttribute('data-theme') === 'dark' || 
+               document.documentElement.classList.contains('dark');
+    });
+
+    useEffect(() => {
+        const updateTheme = () => {
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                               document.documentElement.classList.contains('dark');
+            setIsDark(isDarkMode);
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        };
+
+        // Initial sync on mount
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+        window.addEventListener('storage', updateTheme);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('storage', updateTheme);
+        };
+    }, []);
+
     return (
         <section className="section-padding">
             <div className="container-custom text-center">
@@ -36,7 +66,8 @@ const PetHeroes = () => {
                 {heroes.map((hero) => (
     <div
         key={hero.id}
-        className="bg-neutral-50 dark:bg-neutral-800 p-5 rounded-xl shadow-md hover:shadow-lg transition transform hover:scale-105 flex flex-col items-center"
+        className=" bg-neutral-50  p-5 rounded-xl shadow-md hover:shadow-lg transition transform hover:scale-105 flex flex-col items-center"
+                    style   ={isDark ? { backgroundColor: '#000' } : { backgroundColor: '#f9f9f9' }}
     >
         <img
             src={hero.img}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -6,6 +6,34 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const Testimonials = () => {
+    const [isDark, setIsDark] = useState(() => {
+        // Check localStorage first, then fall back to document attribute
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) return savedTheme === 'dark';
+        return document.documentElement.getAttribute('data-theme') === 'dark' || 
+               document.documentElement.classList.contains('dark');
+    });
+
+    useEffect(() => {
+        const updateTheme = () => {
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                               document.documentElement.classList.contains('dark');
+            setIsDark(isDarkMode);
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        };
+
+        // Initial sync on mount
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+        window.addEventListener('storage', updateTheme);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('storage', updateTheme);
+        };
+    }, []);
     const testimonials = [
         {
             name: 'Sarah Johnson',
@@ -49,7 +77,8 @@ const Testimonials = () => {
                     <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-semibold mb-4">
                         Testimonials
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-4"
+                        style={isDark ? { color: '#ffffff' } : { color: '#000000' }}>
                         What Our Community Says
                     </h2>
                     <div className="max-w-2xl">
@@ -75,7 +104,7 @@ const Testimonials = () => {
                 >
                     {testimonials.map((testimonial, index) => (
                         <SwiperSlide key={index}>
-                            <div className="card-standard h-full flex flex-col items-center text-center p-6 bg-white dark:bg-neutral-900 rounded-xl shadow-md">
+                            <div className="card-standard h-full flex flex-col items-center text-center p-6 bg-transparent dark:bg-black rounded-xl shadow-md" style={isDark ? { backgroundColor: '#000' } : { backgroundColor: 'transparent' }}>
                                 {/* Rating */}
                                 <div className="flex items-center justify-center gap-1 mb-4">
                                     {[...Array(testimonial.rating)].map((_, i) => (

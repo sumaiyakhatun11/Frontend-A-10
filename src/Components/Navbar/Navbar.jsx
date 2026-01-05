@@ -22,18 +22,27 @@ const Navbar = () => {
         if (storedTheme === 'dark') {
             setIsDark(true);
             document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.setAttribute('data-theme', 'light');
         }
     }, []);
 
     const handleTheme = () => {
         const newTheme = isDark ? 'light' : 'dark';
         setIsDark(!isDark);
-        document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
     };
 
     return (
-        <nav className="w-full bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white shadow-md px-6 py-4 flex items-center justify-between md:justify-between transition-colors duration-300">
+        <nav className="w-full bg-white dark:bg-black text-neutral-900 dark:text-white shadow-md px-6 py-4 flex items-center justify-between md:justify-between transition-colors duration-300">
 
             {/* Logo */}
             <div className="flex items-center gap-2 text-2xl font-bold text-neutral-800 dark:text-white tracking-wide">
@@ -87,7 +96,7 @@ const Navbar = () => {
                             </button>
 
                             {profileOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 py-2 z-50">
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-black rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 py-2 z-50">
                                     <Link
                                         to="/dashboard/profile"
                                         onClick={() => setProfileOpen(false)}
@@ -155,7 +164,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {menuOpen && (
-                <div className="md:hidden fixed top-16 left-0 right-0 z-40 bg-white dark:bg-neutral-800 shadow-lg rounded-b-xl flex flex-col gap-2 px-4 py-4 border-t border-neutral-200 dark:border-neutral-700">
+                <div className="md:hidden fixed top-16 left-0 right-0 z-40 bg-white dark:bg-black shadow-lg rounded-b-xl flex flex-col gap-2 px-4 py-4 border-t border-neutral-200 dark:border-neutral-700">
                     <Link to="/" onClick={() => setMenuOpen(false)} className="text-neutral-900 dark:text-neutral-100 hover:text-primary dark:hover:text-primary transition-colors py-2">Home</Link>
                     <Link to="/services" onClick={() => setMenuOpen(false)} className="text-neutral-900 dark:text-neutral-100 hover:text-primary dark:hover:text-primary transition-colors py-2">Pets & Supplies</Link>
                     <Link to="/about" onClick={() => setMenuOpen(false)} className="text-neutral-900 dark:text-neutral-100 hover:text-primary dark:hover:text-primary transition-colors py-2">About</Link>

@@ -14,8 +14,6 @@ const Services = () => {
     const [category, setCategory] = useState("All");
     const [search, setSearch] = useState("");
     const [filteredServices, setFilteredServices] = useState([]);
-    const [sortBy, setSortBy] = useState("default");
-    const [priceRange, setPriceRange] = useState("all");
     
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -59,7 +57,7 @@ const Services = () => {
             });
     }, [categoryFromUrl, searchFromUrl]);
 
-    const applyFilter = (selectedCategory, searchText, selectedSortBy, selectedPriceRange) => {
+    const applyFilter = (selectedCategory, searchText) => {
         let results = [...services];
 
         // Category filter
@@ -77,29 +75,6 @@ const Services = () => {
             );
         }
 
-        // Price range filter
-        if (selectedPriceRange !== "all") {
-            const ranges = {
-                "0-50": [0, 50],
-                "50-200": [50, 200],
-                "200-500": [200, 500],
-                "500+": [500, Infinity]
-            };
-            const [min, max] = ranges[selectedPriceRange];
-            results = results.filter(service => 
-                service.price >= min && service.price <= max
-            );
-        }
-
-        // Sorting
-        if (selectedSortBy === "price-low") {
-            results.sort((a, b) => a.price - b.price);
-        } else if (selectedSortBy === "price-high") {
-            results.sort((a, b) => b.price - a.price);
-        } else if (selectedSortBy === "name-az") {
-            results.sort((a, b) => a.name.localeCompare(b.name));
-        }
-
         setFilteredServices(results);
         setCurrentPage(1); // Reset to first page when filters change
 
@@ -113,25 +88,13 @@ const Services = () => {
     const handleCategorySelection = (e) => {
         const selected = e.target.value;
         setCategory(selected);
-        applyFilter(selected, search, sortBy, priceRange);
+        applyFilter(selected, search);
     };
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
-        applyFilter(category, value, sortBy, priceRange);
-    };
-
-    const handleSortChange = (e) => {
-        const selected = e.target.value;
-        setSortBy(selected);
-        applyFilter(category, search, selected, priceRange);
-    };
-
-    const handlePriceRangeChange = (e) => {
-        const selected = e.target.value;
-        setPriceRange(selected);
-        applyFilter(category, search, sortBy, selected);
+        applyFilter(category, value);
     };
 
     // Pagination logic
@@ -145,37 +108,21 @@ const Services = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Skeleton loader
-    const SkeletonCard = () => (
-        <div className="card-standard">
-            <div className="skeleton h-48 w-full mb-4"></div>
-            <div className="skeleton h-6 w-3/4 mb-2"></div>
-            <div className="skeleton h-4 w-1/2 mb-2"></div>
-            <div className="skeleton h-4 w-2/3 mb-4"></div>
-            <div className="skeleton h-10 w-full"></div>
-        </div>
-    );
-
     if (loading || servicesLoading) {
         return (
-            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
-                <div className="container-custom py-8">
-                    <div className="skeleton h-12 w-64 mb-8"></div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
-                    </div>
-                </div>
+            <div className="min-h-screen  flex justify-center items-center">
+                <div className="animate-spin h-12 w-12 border-b-2 border-primary rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
-            <div className="container-custom py-8">
+        <div className=" w-full md:w-11/12 mx-auto min-h-screen py-8">
+            <div className="container-custom">
                 {/* Page Header */}
-                <div className="mb-8">
+                <div className="mb-8 flex flex-col justify-center items-center">
                     <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
-                        Explore Pets & Supplies
+                        Explore <span className='text-[#af6723]'>Pets</span> & Supplies
                     </h1>
                     <p className="text-lg text-neutral-600 dark:text-neutral-400">
                         Find your perfect companion or essential pet supplies
@@ -183,12 +130,11 @@ const Services = () => {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="card-standard mb-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {/* Search */}
-                        <div className="lg:col-span-2">
+                <div className="card-standard mb-8 p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                             <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                🔍 Search
+                                Search
                             </label>
                             <input
                                 type="text"
@@ -198,11 +144,9 @@ const Services = () => {
                                 className="input-standard"
                             />
                         </div>
-
-                        {/* Category Filter */}
                         <div>
                             <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                📁 Category
+                                Category
                             </label>
                             <select
                                 className="input-standard"
@@ -216,52 +160,10 @@ const Services = () => {
                                 <option value="Care Products">Care Products</option>
                             </select>
                         </div>
-
-                        {/* Price Range Filter */}
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                💰 Price Range
-                            </label>
-                            <select
-                                className="input-standard"
-                                onChange={handlePriceRangeChange}
-                                value={priceRange}
-                            >
-                                <option value="all">All Prices</option>
-                                <option value="0-50">0 - 50 tk</option>
-                                <option value="50-200">50 - 200 tk</option>
-                                <option value="200-500">200 - 500 tk</option>
-                                <option value="500+">500+ tk</option>
-                            </select>
-                        </div>
-
-                        {/* Sort */}
-                        <div className="lg:col-span-4">
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                🔄 Sort By
-                            </label>
-                            <select
-                                className="input-standard"
-                                onChange={handleSortChange}
-                                value={sortBy}
-                            >
-                                <option value="default">Default</option>
-                                <option value="price-low">Price: Low to High</option>
-                                <option value="price-high">Price: High to Low</option>
-                                <option value="name-az">Name: A-Z</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Results Count */}
-                    <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                            Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredServices.length)} of {filteredServices.length} results
-                        </p>
                     </div>
                 </div>
 
-                {/* Results Grid */}
+                {/* Cards Grid */}
                 {currentItems.length === 0 ? (
                     <div className="text-center py-16">
                         <div className="text-6xl mb-4">🔍</div>
@@ -275,8 +177,6 @@ const Services = () => {
                             onClick={() => {
                                 setCategory("All");
                                 setSearch("");
-                                setSortBy("default");
-                                setPriceRange("all");
                                 setFilteredServices(services);
                             }}
                             className="btn-primary"
@@ -286,40 +186,38 @@ const Services = () => {
                     </div>
                 ) : (
                     <>
-                        <div className="card-grid">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {currentItems.map((item, index) => (
                                 <motion.div
                                     key={item._id}
                                     initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.05 }}
-                                    className="card-standard group"
+                                    viewport={{ once: true }}
+                                    className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-1 p-5 flex flex-col hover:bg-gray-200"
                                 >
-                                    {/* Image */}
-                                    <div className="relative overflow-hidden rounded-lg mb-4 h-48">
+                                    <div className="relative overflow-hidden rounded-lg mb-4 h-52">
                                         <img
                                             src={item.image}
                                             alt={item.name}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                         />
-                                        <div className="absolute top-2 right-2 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                        <div className="absolute top-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold shadow">
                                             {item.price} tk
                                         </div>
                                     </div>
 
-                                    {/* Content */}
-                                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 line-clamp-1">
+                                    <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 line-clamp-1">
                                         {item.name}
                                     </h3>
-
-                                    <div className="space-y-2 mb-4">
-                                        <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                    <div className="space-y-2 mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                                        <div className="flex items-center gap-2">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                             </svg>
                                             {item.category}
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                        <div className="flex items-center gap-2">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             </svg>
@@ -327,9 +225,8 @@ const Services = () => {
                                         </div>
                                     </div>
 
-                                    {/* Button */}
-                                    <Link to={`/viewDetails/${item._id}`} className="block">
-                                        <button className="btn-primary w-full">
+                                    <Link to={`/viewDetails/${item._id}`} className="mt-auto">
+                                        <button className="btn-primary w-full py-3 transition-transform hover:scale-105 text-orange-800 font-bold">
                                             View Details
                                         </button>
                                     </Link>
@@ -350,7 +247,6 @@ const Services = () => {
 
                                 {[...Array(totalPages)].map((_, index) => {
                                     const pageNumber = index + 1;
-                                    // Show first, last, current, and 2 pages around current
                                     if (
                                         pageNumber === 1 ||
                                         pageNumber === totalPages ||
